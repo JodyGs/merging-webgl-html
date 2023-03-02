@@ -12,6 +12,8 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
+    "fontfaceobserver": "^2.3.0",
+    "imagesloaded": "^5.0.0",
     "three": "^0.150.1",
     "vite-plugin-glsl": "^1.1.2"
   }

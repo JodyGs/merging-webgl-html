@@ -73,9 +73,9 @@ h1,h2{
   justify-self: end;
 }
 .item img{
-  width: 100%;
+  /* max-width: 100%; */
   display: block;
-  opacity: 1;
+  opacity: 0;
 }
 .item__image{
   position: relative;
@@ -135,7 +135,7 @@ h1,h2{
       margin-bottom: 3em;
   }
   .item img{
-      width: 100%;
+      /* width: 100%; */
       max-width: none;
   }
 }
