@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import imagesLoaded from "imagesloaded"
 import FontFaceObserver from "fontfaceobserver"
+import gsap from 'gsap'
 import Scroll from './scroll';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
-import textureTest from './img/texture.jpg'
+
 
 
 export default class Sketch {
@@ -62,16 +63,17 @@ export default class Sketch {
   }
 
   mouseMovement() {
-    window.addEventListener('mousemove', (event) => {
-      this.mouse.x = (event.clientX / this.width) * 2 - 1
-      this.mouse.y = (event.clientY / this.height) * 2 + 1
+    window.addEventListener( 'mousemove', (event)=>{
+      this.mouse.x = ( event.clientX / this.width ) * 2 - 1;
+      this.mouse.y = - ( event.clientY / this.height ) * 2 + 1;
 
-      this.raycaster.setFromCamera(this.mouse, this.camera)
+      this.raycaster.setFromCamera( this.mouse, this.camera );
 
-      const intersects = this.raycaster.intersectObjects( this.scene.children)
+      const intersects = this.raycaster.intersectObjects( this.scene.children );
 
-      if(intersects.length > 0){
-
+      if(intersects.length>0){
+          let obj = intersects[0].object;
+          obj.material.uniforms.uHover.value = intersects[0].uv;
       }
     }, false)
   }
@@ -97,6 +99,19 @@ export default class Sketch {
 
       let mat = this.material.clone()
       this.materials.push(mat)
+
+      img.addEventListener('mouseenter', () => {
+        gsap.to(mat.uniforms.uHoverState, {
+          duration: 1,
+          value: 1,
+        })
+      })
+      img.addEventListener('mouseout', () => {
+        gsap.to(mat.uniforms.uHoverState, {
+          duration: 1,
+          value: 0,
+        })
+      })
 
       mat.uniforms.uImage.value = texture
 
@@ -128,9 +143,9 @@ export default class Sketch {
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uImage: {value: 0},
-        uHover: {value: new THREE.Vector2(0.5, 0.5)},
-        uTexture: {value: new THREE.TextureLoader().load(textureTest)},
+        uImage: { value: 0 },
+        uHover: { value: new THREE.Vector2(0.5, 0.5) },
+        uHoverState: { value: 0 },
       },
       fragmentShader,
       vertexShader,
