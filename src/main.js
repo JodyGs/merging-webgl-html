@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
+import test from "./img/1.jpg"
 
 export default class Sketch {
   constructor(options) {
@@ -11,16 +12,22 @@ export default class Sketch {
 
     this.width = this.container.offsetWidth
     this.height = this.container.offsetHeight
+  
+    this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 100, 1000)
+    this.camera.position.z = 600
 
-    this.camera = new THREE.PerspectiveCamera(70, this.width / this.height, 0.01, 10)
-    this.camera.position.z = 1
+    this.camera.fov = 2 * Math.atan((this.height/2) / 600) * (180/Math.PI)
 
-    this.renderer = new THREE.WebGLRenderer({antialias: true});
+    this.renderer = new THREE.WebGLRenderer({antialias: true,
+    alpha: true});
     this.renderer.setSize(this.width, this.height);
     this.container.appendChild(this.renderer.domElement)
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
+    this.images = [...document.querySelectorAll('img')]
+
+    this.addImages()
     this.resize()
     this.setupResize()
     this.addObjects()
@@ -39,15 +46,20 @@ export default class Sketch {
     this.camera.updateProjectionMatrix()
   }
 
+  addImages(){
+    
+  }
+
   addObjects() {
-    this.geometry = new THREE.PlaneGeometry(0.5, 0.5, 50, 50)
+    this.geometry = new THREE.PlaneGeometry(100, 100, 10, 10)
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        uTime: {value: 0}
+        uTime: {value: 0},
+        // uTexture: {value: new THREE.TextureLoader().load(test)}
       },
-      wireframe: true,
       fragmentShader,
-      vertexShader
+      vertexShader,
+      wireframe: true,
     })
 
     this.mesh = new THREE.Mesh(this.geometry, this.material)
